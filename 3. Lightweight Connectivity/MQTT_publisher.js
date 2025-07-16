@@ -1,0 +1,1 @@
+MQTT.publish("home/devices/control", "off", 0, false);
