@@ -119,20 +119,22 @@ def set_trv_temperature(mac, new_temp):
     """
     should be equal to http://192.168.33.1/rpc/BluTrv.Call?id=200&method="TRV.SetTarget"&params={"id":0,"target_C":22}
     """
-    call_ble_rpc(
+    return call_ble_rpc(
         mac,
-        {
-            "id": 200,
-            "src": "cli",
-            "method": "BluTrv.Call",
-            "params": {
-                "id": 0,
-                "method": "TRV.SetTarget",
-                "params": {"id": 0, "target_C": new_temp},
-            },
-        },
+            {
+                "id": 1,
+                "src": "postman",
+                "method": "BluTrv.Call",
+                "params": {
+                    "id": 200,
+                    "method": "TRV.SetTarget",
+                    "params": {
+                        "id": 0,
+                        "target_C": new_temp
+                    }
+                }
+            }
     )
-
 
 if __name__ == "__main__":
     logger.info("start")
