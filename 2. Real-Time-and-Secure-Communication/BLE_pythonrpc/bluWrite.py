@@ -115,55 +115,71 @@ def toggle_switch(mac):
     return call_ble_rpc(mac, payload)
 
 
+def set_gw_trv_temperature(mac, new_temp):
+    """
+    Send setpoin over gateway same as http://192.168.33.1/rpc/BluTrv.Call?id=200&method="TRV.SetTarget"&params={"id":0,"target_C":22}
+    """
+    call_ble_rpc(
+        mac,
+        {
+            "id": 200,
+            "src": "cli",
+            "method": "BluTrv.Call",
+            "params": {
+                "id": 0,
+                "method": "TRV.SetTarget",
+                "params": {"id": 0, "target_C": new_temp},
+            },
+        },
+    )
+
+
 def set_trv_temperature(mac, new_temp):
     """
-    should be equal to http://192.168.33.1/rpc/BluTrv.Call?id=200&method="TRV.SetTarget"&params={"id":0,"target_C":22}
+    Direct send setpoin to TRV 
     """
     return call_ble_rpc(
         mac,
             {
                 "id": 1,
                 "src": "postman",
-                "method": "BluTrv.Call",
-                "params": {
-                    "id": 200,
                     "method": "TRV.SetTarget",
                     "params": {
                         "id": 0,
                         "target_C": new_temp
                     }
                 }
-            }
     )
 
 if __name__ == "__main__":
-    logger.info("start")
-    MAC_TRV = "xx:xx:xx:xx:xx"  # -> SBTR-EU2321"
+    logger.info("start")    
+    MAC_TRV = "xx:xx:xx:xx:xx"  # -> SBTR-EU2321" / Shelly Blue TRV
     MAC_PRO = "xx:xx:xx:xx:xx"  # ShellyPro2PM-xxx
     MAC_GW = "xx:xx:xx:xx:xx"  # ShellyBluGwG3-xxx
 
+
     scan()  # show bluetooth devices near by
 
-    status_payload = {"id": 1, "src": "cli", "method": "Shelly.GetStatus"}
-    result_status = call_ble_rpc(MAC_PRO, status_payload)
-    if result_status:
-        logger.info("Status of pro: %s", json.dumps(result_status, indent=2))
+    # status_payload = {"id": 1, "src": "cli", "method": "Shelly.GetStatus"}
+    # result_status = call_ble_rpc(MAC_PRO, status_payload)
+    # if result_status:
+    #     logger.info("Status of pro: %s", json.dumps(result_status, indent=2))
 
-    result_toggle = toggle_switch(MAC_PRO)
-    if result_toggle:
-        logger.info("Toggle on pro: %s", json.dumps(result_toggle, indent=2))
+    # result_toggle = toggle_switch(MAC_PRO)
+    # if result_toggle:
+    #     logger.info("Toggle on pro: %s", json.dumps(result_toggle, indent=2))
 
-    result_status = call_ble_rpc(MAC_GW, status_payload)
-    if result_status:
-        logger.info("Status of blu gateway: %s", json.dumps(result_status, indent=2))
+    # result_status = call_ble_rpc(MAC_GW, status_payload)
+    # if result_status:
+    #     logger.info("Status of blu gateway: %s", json.dumps(result_status, indent=2))
 
-    res = set_trv_temperature(MAC_GW, 22)
-    if res:
-        logger.info("Set temperature via blu gateway: %s", json.dumps(res, indent=2))
+    # res = set_gw_trv_temperature(MAC_GW, 22)
+    # if res:
+    #     logger.info("Set temperature via blu gateway: %s", json.dumps(res, indent=2))
 
-    result_status = call_ble_rpc(MAC_TRV, status_payload)
-    if result_status:
-        logger.info("Status of TRV: %s", json.dumps(result_status, indent=2))
+    # result_status = call_ble_rpc(MAC_TRV, status_payload)
+    # if result_status:
+    #     logger.info("Status of TRV: %s", json.dumps(result_status, indent=2))
 
     res = set_trv_temperature(MAC_TRV, 23)
     if res:
